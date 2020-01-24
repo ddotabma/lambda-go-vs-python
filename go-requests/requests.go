@@ -10,42 +10,38 @@ import (
 	"sync"
 )
 
-type MyEvent struct {
-	//Name string `json:"name"`
-}
+var api = os.Getenv("API")
+
 
 type Data struct {
-	Datetime string `json: datetime` // name conversion in struct :D
+	Datetime string `json: datetime` // Name conversion
 	Values   []int  `json: values`
 }
 
 func Deserialize(r http.Response) Data {
-	defer r.Body.Close()
 	data := Data{}
-	_ = json.NewDecoder(r.Body).Decode(&data) // Deserialize response json
+	_ = json.NewDecoder(r.Body).Decode(&data) // Deserialize body
+	_ = r.Body.Close()
 	return data
 }
 
 func Get(wg *sync.WaitGroup) {
-	r, _ := http.Get(os.Getenv("API"))
-
-	fmt.Println(Deserialize(*r))
-	println("Done")
-	wg.Done()
+	r, _ := http.Get(api) 			// Make get request
+	fmt.Println(Deserialize(*r))    // Print body
+	wg.Done() 						// Communicate end of goroutine
 }
 
-func HandleRequest(ctx context.Context, name MyEvent) (string, error) {
+func Handler(_ context.Context, _ interface{}) (string, error) {
 	wg := sync.WaitGroup{}
-	numRequests := 100
-	for i := 0; i < numRequests; i++ { // make 1000 requests
-		wg.Add(1)   // increment counter
-		go Get(&wg) // <<<=== Run Get concurrently
+	for i := 0; i < 100; i++ {		// make 1000 requests
+	wg.Add(1) 				// increment counter
+		go Get(&wg)					// <<<=== Run Get concurrently
 	}
-	wg.Wait() // Wait till all requests to be finished
+	wg.Wait() 						// Wait untill all responses obtained
 	return "Processed requests", nil
 }
 
 func main() {
-	//HandleRequest(nil, MyEvent{})
-	lambda.Start(HandleRequest)
+	//Handler(nil, nil)
+	lambda.Start(Handler)
 }

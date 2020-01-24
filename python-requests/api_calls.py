@@ -5,7 +5,7 @@ from typing import List
 import os
 
 @dataclass
-class OperationData:
+class Data:
     datetime: str
     values: List[int]
 
@@ -13,25 +13,28 @@ class OperationData:
         self.values = [int(i) for i in self.values]  # convert values to int
         assert isinstance(self.datetime, str)
 
+def deserialize(d: dict):
+    return Data(**d)
+
 
 async def get(session, url: str) -> dict:
-    response = await session.get(url)  # Make requests
-    return await response.json()  # Dictionaries
+    response = await session.get(url)  # Make http requests
+    return await response.json()       # Obtain body as dict
 
 
-async def gather_all_get_requests(url_list: List[str]):
+async def send_all_get_requests(url_list: List[str]):
     async with aiohttp.ClientSession() as session:
         return await asyncio.gather(*[get(session, i) for i in url_list])
 
 
 def handler(event, context):
     results = asyncio.run(
-        gather_all_get_requests(
+        send_all_get_requests(
             [os.environ["API"] for _ in range(100)] # todo make var
         )
     )
     for i in results:
-        print(OperationData(**i))
+        print(deserialize(i))
     return f"{len(results)} responses"
 
 
