@@ -1,0 +1,8 @@
+requests
+requests.zip
+
+python-requests/lambda-packaged
+parquet/write_parquet
+output.parquet
+terraform/*state*
+*.tfvars

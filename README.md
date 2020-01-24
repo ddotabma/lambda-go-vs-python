@@ -1,1 +1,0 @@
-# lambda-go-vs-python
