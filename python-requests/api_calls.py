@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import asyncio
 import aiohttp
 from typing import List
-
+import os
 
 @dataclass
 class OperationData:
@@ -27,7 +27,7 @@ async def gather_all_get_requests(url_list: List[str]):
 def handler(event, context):
     results = asyncio.run(
         gather_all_get_requests(
-            ["https://566pcoo3hl.execute-api.eu-west-1.amazonaws.com/dev" for _ in range(100)] # todo make var
+            [os.environ["API"] for _ in range(100)] # todo make var
         )
     )
     for i in results:

@@ -6,3 +6,4 @@ parquet/write_parquet
 output.parquet
 terraform/*state*
 *.tfvars
+*.zip

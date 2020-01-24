@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -26,7 +27,8 @@ func Deserialize(r http.Response) Data {
 }
 
 func Get(wg *sync.WaitGroup) {
-	r, _ := http.Get("https://566pcoo3hl.execute-api.eu-west-1.amazonaws.com/dev") // todo make var
+	r, _ := http.Get(os.Getenv("API"))
+
 	fmt.Println(Deserialize(*r))
 	println("Done")
 	wg.Done()
@@ -44,5 +46,6 @@ func HandleRequest(ctx context.Context, name MyEvent) (string, error) {
 }
 
 func main() {
+	//HandleRequest(nil, MyEvent{})
 	lambda.Start(HandleRequest)
 }
