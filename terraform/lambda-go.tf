@@ -9,7 +9,7 @@ resource "aws_lambda_function" "go_requests" {
   function_name = "api-calls-go"
   handler = "requests"
   runtime = "go1.x"
-  role = aws_iam_role.go_requests.arn
+  role = aws_iam_role.requests.arn
   timeout = 30
 
   environment {

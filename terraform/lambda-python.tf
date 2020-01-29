@@ -4,8 +4,9 @@ resource "aws_lambda_function" "python_requests" {
   function_name = "api-calls-python"
   handler = "api_calls.handler"
   runtime = "python3.7"
-  role = aws_iam_role.go_requests.arn
+  role = aws_iam_role.requests.arn
   timeout = 30
+  memory_size = 320
 
   environment {
     variables = {
