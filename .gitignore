@@ -7,3 +7,5 @@ output.parquet
 terraform/*state*
 *.tfvars
 *.zip
+*.parquet
+*.json

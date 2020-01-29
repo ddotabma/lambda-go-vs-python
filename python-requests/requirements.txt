@@ -1,2 +1,4 @@
 aiohttp
+pandas
 pyarrow==0.12.1
+s3fs
