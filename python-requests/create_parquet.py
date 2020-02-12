@@ -1,3 +1,4 @@
+import pyarrow as pa
 from typing import List
 
 
