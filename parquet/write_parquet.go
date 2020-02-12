@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/bxcodec/faker/v3"
 	"github.com/xitongsys/parquet-go-source/s3"
 	"github.com/xitongsys/parquet-go/parquet"
 	"github.com/xitongsys/parquet-go/writer"
@@ -29,15 +28,15 @@ func main() {
 	//create fake data
 	for i := 0; i < recordNumber; i++ {
 		u := &user{
-			ID:        faker.UUIDDigit(),
-			FirstName: faker.FirstName(),
-			LastName:  faker.LastName(),
-			Email:     faker.Email(),
-			Phone:     faker.Phonenumber(),
-			Blog:      faker.URL(),
-			Username:  faker.Username(),
-			Score:     float64(i),
-			CreatedAt: time.Now(),
+			//ID:        faker.UUIDDigit(),
+			//FirstName: faker.FirstName(),
+			//LastName:  faker.LastName(),
+			//Email:     faker.Email(),
+			//Phone:     faker.Phonenumber(),
+			//Blog:      faker.URL(),
+			//Username:  faker.Username(),
+			//Score:     float64(i),
+			//CreatedAt: time.Now(),
 		}
 		data = append(data, u)
 	}
