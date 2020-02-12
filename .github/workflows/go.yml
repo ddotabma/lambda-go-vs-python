@@ -29,12 +29,12 @@ jobs:
       working-directory: go-requests
       run: go build -v requests.go
 
-    - nane: Upload executable to s3
+    - name: Upload executable to s3
       working-directory: go-requests
       run: |
         zip -q go-requests.zip requests
         aws s3 cp go-requests.zip s3://bdr-go-blog
 
-    - nane: Update lambda function
+    - name: Update lambda function
       working-directory: go-requests
       run: aws lambda update-function-code --function-name api-calls-go --s3-bucket bdr-go-blog --s3-key go-requests.zip > /tmp/dumpgo
