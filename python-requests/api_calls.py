@@ -1,14 +1,14 @@
 import asyncio
 import os
 
-from .async_requests import send_all_get_requests
-from .create_parquet import dataclasses_to_parquet
-from .model import deserialize
+from api_calls_utils.async_requests import multiple_get_requests
+from api_calls_utils.create_parquet import dataclasses_to_parquet
+from api_calls_utils.model import deserialize
 
 
-def handler(event, context):
+def handler(_, __):
     results = asyncio.run(
-        send_all_get_requests(
+        multiple_get_requests(
             [os.environ["API"] for _ in range(100)]  # todo make var
         )
     )
