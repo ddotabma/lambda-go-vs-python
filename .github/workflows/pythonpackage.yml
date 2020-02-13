@@ -39,7 +39,7 @@ jobs:
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
-      - name: Upload layer zip to S3
+      - name: Update lambda layer using S3
         working-directory: python-requests
         run: |
           export LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
@@ -58,7 +58,7 @@ jobs:
       - name: Update lambda function
         working-directory: python-requests
         run: |
-          aws ambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dump2
+          aws lambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dump2
 
       - name: Update lambda function configuration
         working-directory: python-requests
