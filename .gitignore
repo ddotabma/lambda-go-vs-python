@@ -9,3 +9,4 @@ terraform/*state*
 *.zip
 *.parquet
 *.json
+python-requests/python

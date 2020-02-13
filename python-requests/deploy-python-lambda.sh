@@ -12,14 +12,19 @@ zip -rq9 python-requests-layer.zip python
 
 aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
-aws lambda publish-layer-version \
-  --layer-name frequent-layer \
-  --content S3Bucket=s3://bdr-go-blog,S3Key=python-requests-layer.zip \
-  --compatible-runtimes python3.7
+export LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
+  --layer-name python-requests-layer \
+  --content S3Bucket=bdr-go-blog,S3Key=python-requests-layer.zip \
+  --compatible-runtimes python3.7 | jq -r ".LayerVersionArn")
 
+mkdir lambda-packaged
 cp *.py lambda-packaged/
 cd lambda-packaged && zip -rq python-requests.zip *
 
 aws s3 cp python-requests.zip s3://bdr-go-blog
 
 aws --profile=bdr lambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dumpr
+
+aws lambda update-function-configuration \
+--function-name api-calls-python \
+--layers ${LAYER_VERSION_ARN}
