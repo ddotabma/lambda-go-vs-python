@@ -23,7 +23,7 @@ cd lambda-packaged && zip -rq python-requests.zip *
 
 aws s3 cp python-requests.zip s3://bdr-go-blog
 
-aws --profile=bdr lambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dumpr
+aws ambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dumpr
 
 aws lambda update-function-configuration \
 --function-name api-calls-python \
