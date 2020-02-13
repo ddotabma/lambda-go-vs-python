@@ -1,5 +1,8 @@
 name: Go
-on: [push]
+on:
+  push:
+    - 'go-requests/**'
+
 jobs:
   build:
     name: Build

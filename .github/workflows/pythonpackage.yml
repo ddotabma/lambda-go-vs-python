@@ -1,6 +1,8 @@
 name: Python package
 
-on: [push]
+on:
+  push:
+    - 'python-requests/**'
 
 jobs:
   build:
@@ -10,53 +12,60 @@ jobs:
       matrix:
         python-version: [3.7]
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      working-directory: python-requests
-      run: |
-        pip install -r requirements.txt
-    - name: Lint with flake8
-      working-directory: python-requests
-      run: |
-        pip install flake8
-        flake8 .
-    - name: Build new lambda layer
-      working-directory: python-requests
-      if: $(! -z $(git diff --name-only python-requests/requirements.txt))
-      run: |
-        pip install -r requirements.txt -t python/lib/python3.7/site-packages/
-        zip -rq9 python-requests-layer.zip python
-    - name: Upload layer zip to S3
-      working-directory: python-requests
-      if: $(! -z $(git diff --name-only python-requests/requirements.txt))
-      run: |
-        aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
-    - name: Upload layer zip to S3
-      working-directory: python-requests
-      if: $(! -z $(git diff --name-only python-requests/requirements.txt))
-      run: |
-        export LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
-        --layer-name python-requests-layer \
-        --content S3Bucket=bdr-go-blog,S3Key=python-requests-layer.zip \
-        --compatible-runtimes python3.7 | jq -r ".LayerVersionArn")
-    - name: Upload lambda zip to S3
-      working-directory: python-requests
-      run: |
-        mkdir lambda-packaged
-        cp *.py lambda-packaged/
-        cd lambda-packaged && zip -rq python-requests.zip *
-        aws s3 cp python-requests.zip s3://bdr-go-blog
+      - uses: actions/checkout@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        working-directory: python-requests
+        run: |
+          pip install -r requirements.txt
 
-    - name: Update lambda function
-      working-directory: python-requests
-      run: |
-        aws ambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dumpr
+      - name: Lint with flake8
+        working-directory: python-requests
+        run: |
+          pip install flake8
+          flake8 --max-line-length=200 .
 
+      - name: Build new lambda layer
+        working-directory: python-requests
+        if: $(! -z $(git diff --name-only python-requests/requirements.txt))
+        run: |
+          pip install -r requirements.txt -t python/lib/python3.7/site-packages/
+          zip -rq9 python-requests-layer.zip python
 
- - name: Update lambda function
-         working-directory: python-requests
-         run: |
+      - name: Upload layer zip to S3
+        working-directory: python-requests
+        if: $(! -z $(git diff --name-only python-requests/requirements.txt))
+        run: |
+          aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
+
+      - name: Upload layer zip to S3
+        working-directory: python-requests
+        if: $(! -z $(git diff --name-only python-requests/requirements.txt))
+        run: |
+          export LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
+          --layer-name python-requests-layer \
+          --content S3Bucket=bdr-go-blog,S3Key=python-requests-layer.zip \
+          --compatible-runtimes python3.7 | jq -r ".LayerVersionArn")
+
+      - name: Upload lambda zip to S3
+        working-directory: python-requests
+        run: |
+          mkdir lambda-packaged
+          cp *.py lambda-packaged/
+          cd lambda-packaged && zip -rq python-requests.zip *
+          aws s3 cp python-requests.zip s3://bdr-go-blog
+
+      - name: Update lambda function
+        working-directory: python-requests
+        run: |
+          aws ambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dump2
+
+      - name: Update lambda function configuration
+          working-directory: python-requests
+          run: |
+            aws lambda update-function-configuration \
+            --function-name api-calls-python \
+            --layers ${LAYER_VERSION_ARN}

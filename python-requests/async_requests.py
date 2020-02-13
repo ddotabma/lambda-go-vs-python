@@ -1,7 +1,8 @@
 import aiohttp
 import asyncio
-from typing import List
 from aiohttp import ClientSession
+from typing import List
+
 
 async def get(session: ClientSession, url: str) -> dict:
     response = await session.get(url)  # Make single http request
