@@ -42,7 +42,7 @@ jobs:
 
       - name: Upload layer zip to S3
         working-directory: python-requests
-        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
+        if: contains($BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
@@ -59,6 +59,7 @@ jobs:
       - name: Upload lambda zip to S3
         working-directory: python-requests
         run: |
+          echo ${BUILD_LAYER}
           mkdir lambda-packaged
           mv api_calls_utils lambda-packaged
           cp *.py lambda-packaged/
