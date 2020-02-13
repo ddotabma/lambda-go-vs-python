@@ -2,7 +2,8 @@ name: Python package
 
 on:
   push:
-    - 'python-requests/**'
+    paths:
+      - 'python-requests/**'
 
 jobs:
   build:

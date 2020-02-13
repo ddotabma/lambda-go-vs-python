@@ -1,7 +1,8 @@
 name: Go
 on:
   push:
-    - 'go-requests/**'
+    paths:
+      - 'go-requests/**'
 
 jobs:
   build:
