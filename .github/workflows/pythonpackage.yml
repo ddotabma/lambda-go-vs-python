@@ -62,7 +62,7 @@ jobs:
         run: |
           aws lambda update-function-code --function-name \
           api-calls-python --s3-bucket bdr-go-blog --s3-key \
-          python-requests.zip > /tmp/dump2
+          python-requests.zip
 
       - name: Update lambda function configuration
         working-directory: python-requests
@@ -70,4 +70,4 @@ jobs:
           echo ${LAYER_VERSION_ARN}
           aws lambda update-function-configuration \
           --function-name api-calls-python \
-          --layers ${LAYER_VERSION_ARN} > /tmp/dump
+          --layers ${LAYER_VERSION_ARN}
