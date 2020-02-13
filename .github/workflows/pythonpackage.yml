@@ -28,15 +28,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      - name: Install flake8
-        working-directory: python-requests
-        run: pip install flake8
-
-      - name: Lint with flake8
-        working-directory: python-requests
-        run: |
-          flake8 --max-line-length=200 .
-
       - name: Build new lambda layer
         working-directory: python-requests
         run: |
