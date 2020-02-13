@@ -51,6 +51,7 @@ jobs:
         working-directory: python-requests
         run: |
           mkdir lambda-packaged
+          mv api_calls_utils lambda-packaged
           cp *.py lambda-packaged/
           cd lambda-packaged && zip -rq python-requests.zip *
           aws s3 cp python-requests.zip s3://bdr-go-blog
