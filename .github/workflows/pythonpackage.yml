@@ -24,7 +24,10 @@ jobs:
         run: |
           echo "::set-env name=BUILD_LAYER::$(git diff --name-only python-requests/requirements.txt)"
           echo ${BUILD_LAYER}
-
+      - name: print
+        run: |
+          echo ${BUILD_LAYER}
+          echo ${{ env.BUILD_LAYER }}
       - uses: chrislennon/action-aws-cli@v1.1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -42,7 +45,7 @@ jobs:
 
       - name: Upload layer zip to S3
         working-directory: python-requests
-        if: contains($BUILD_LAYER, 'python-requests/requirements.txt')
+        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
