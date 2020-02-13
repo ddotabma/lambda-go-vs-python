@@ -22,7 +22,7 @@ jobs:
 
       - name: Set trigger for layer creation
         run: |
-          BUILD_LAYER=$(git diff --name-only python-requests/requirements.txt)
+          BUILD_LAYER=$(git diff)
           echo "::set-env name=BUILD_LAYER::${BUILD_LAYER}"
 
       - name: print
