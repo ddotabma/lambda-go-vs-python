@@ -42,10 +42,11 @@ jobs:
       - name: Update lambda layer using S3
         working-directory: python-requests
         run: |
-          export LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
+          LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
           --layer-name python-requests-layer \
           --content S3Bucket=bdr-go-blog,S3Key=python-requests-layer.zip \
           --compatible-runtimes python3.7 | jq -r ".LayerVersionArn")
+          echo "::set-env name=LAYER_VERSION_ARN::$(LAYER_VERSION_ARN)"
 
       - name: Upload lambda zip to S3
         working-directory: python-requests
@@ -66,6 +67,7 @@ jobs:
       - name: Update lambda function configuration
         working-directory: python-requests
         run: |
+          echo $(LAYER_VERSION_ARN)
             aws lambda update-function-configuration \
             --function-name api-calls-python \
             --layers ${LAYER_VERSION_ARN} > /tmp/dump
