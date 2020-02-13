@@ -59,7 +59,9 @@ jobs:
       - name: Update lambda function
         working-directory: python-requests
         run: |
-          aws lambda update-function-code --function-name api-calls-python --s3-bucket bdr-go-blog --s3-key python-requests.zip > /tmp/dump2
+          aws lambda update-function-code --function-name \
+          api-calls-python --s3-bucket bdr-go-blog --s3-key \
+          python-requests.zip > /tmp/dump2
 
       - name: Update lambda function configuration
         working-directory: python-requests
