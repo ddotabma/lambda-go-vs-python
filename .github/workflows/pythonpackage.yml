@@ -20,6 +20,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Check build new layer
+        run: |
+          echo "::set-env name=BUILD_LAYER::$(git diff --name-only python-requests/requirements.txt)"
+
       - uses: chrislennon/action-aws-cli@v1.1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -30,6 +34,7 @@ jobs:
 
       - name: Build new lambda layer
         working-directory: python-requests
+        if: env.BUILD_LAYER == python-requests/requirements.txt
         run: |
           pip install -r requirements.txt -t python/lib/python3.7/site-packages/
           zip -rq9 python-requests-layer.zip python
