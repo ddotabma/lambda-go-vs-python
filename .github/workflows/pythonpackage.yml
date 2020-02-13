@@ -41,11 +41,13 @@ jobs:
 
       - name: Upload layer zip to S3
         working-directory: python-requests
+        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
       - name: Update lambda layer using S3
         working-directory: python-requests
+        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
           --layer-name python-requests-layer \
@@ -71,6 +73,7 @@ jobs:
 
       - name: Update lambda function configuration
         working-directory: python-requests
+        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           echo ${LAYER_VERSION_ARN}
             aws lambda update-function-configuration \
