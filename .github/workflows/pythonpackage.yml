@@ -20,17 +20,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Set trigger for layer creation
-        run: |
-          git diff
-          BUILD_LAYER=$(git diff remotes/origin/master --name-only)
-          echo $BUILD_LAYER
-          echo "::set-env name=BUILD_LAYER::$(git diff remotes/origin/master --name-only python-requests/requirements.txt)"
-
-      - name: print
-        run: |
-          echo ${BUILD_LAYER}
-          echo ${{ env.BUILD_LAYER }}
       - uses: chrislennon/action-aws-cli@v1.1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -41,20 +30,17 @@ jobs:
 
       - name: Build new lambda layer
         working-directory: python-requests
-        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           pip install -r requirements.txt -t python/lib/python3.7/site-packages/
           zip -rq9 python-requests-layer.zip python
 
       - name: Upload layer zip to S3
         working-directory: python-requests
-        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
       - name: Update lambda layer using S3
         working-directory: python-requests
-        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
           --layer-name python-requests-layer \
@@ -65,7 +51,6 @@ jobs:
       - name: Upload lambda zip to S3
         working-directory: python-requests
         run: |
-          echo ${BUILD_LAYER}
           mkdir lambda-packaged
           mv api_calls_utils lambda-packaged
           cp *.py lambda-packaged/
@@ -81,7 +66,6 @@ jobs:
 
       - name: Update lambda function configuration
         working-directory: python-requests
-        if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           echo ${LAYER_VERSION_ARN}
           aws lambda update-function-configuration \
