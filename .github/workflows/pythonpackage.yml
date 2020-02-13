@@ -32,20 +32,20 @@ jobs:
 
       - name: Build new lambda layer
         working-directory: python-requests
-        if: -z $(git diff --name-only python-requests/requirements.txt)
+        if: $(-z $(git diff --name-only python-requests/requirements.txt))
         run: |
           pip install -r requirements.txt -t python/lib/python3.7/site-packages/
           zip -rq9 python-requests-layer.zip python
 
       - name: Upload layer zip to S3
         working-directory: python-requests
-        if: -z $(git diff --name-only python-requests/requirements.txt)
+        if: $(-z $(git diff --name-only python-requests/requirements.txt))
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
       - name: Upload layer zip to S3
         working-directory: python-requests
-        if: -z $(git diff --name-only python-requests/requirements.txt)
+        if: $(-z $(git diff --name-only python-requests/requirements.txt))
         run: |
           export LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
           --layer-name python-requests-layer \
