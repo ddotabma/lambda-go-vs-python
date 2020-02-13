@@ -23,6 +23,7 @@ jobs:
       - name: Check build new layer
         run: |
           echo "::set-env name=BUILD_LAYER::$(git diff --name-only python-requests/requirements.txt)"
+          echo ${BUILD_LAYER}
 
       - uses: chrislennon/action-aws-cli@v1.1
       - name: Configure AWS credentials
