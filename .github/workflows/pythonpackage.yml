@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'python-requests/**'
+      - '.github/workflows/pythonpackage.yml'
 
 jobs:
   build:
