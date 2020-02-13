@@ -34,7 +34,7 @@ jobs:
 
       - name: Build new lambda layer
         working-directory: python-requests
-        if: env.BUILD_LAYER == python-requests/requirements.txt
+        if: container(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           pip install -r requirements.txt -t python/lib/python3.7/site-packages/
           zip -rq9 python-requests-layer.zip python
