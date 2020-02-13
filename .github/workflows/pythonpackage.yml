@@ -23,7 +23,7 @@ jobs:
       - name: Set trigger for layer creation
         run: |
           BUILD_LAYER=$(git diff --name-only python-requests/requirements.txt)
-          echo ::set-env name=BUILD_LAYER::${BUILD_LAYER}
+          echo "::set-env name=BUILD_LAYER::${BUILD_LAYER}"
 
       - name: print
         run: |
@@ -82,6 +82,6 @@ jobs:
         if: contains(env.BUILD_LAYER, 'python-requests/requirements.txt')
         run: |
           echo ${LAYER_VERSION_ARN}
-            aws lambda update-function-configuration \
-            --function-name api-calls-python \
-            --layers ${LAYER_VERSION_ARN} > /tmp/dump
+          aws lambda update-function-configuration \
+          --function-name api-calls-python \
+          --layers ${LAYER_VERSION_ARN} > /tmp/dump
