@@ -7,8 +7,8 @@ resource "aws_lambda_function" "python_requests" {
   role = aws_iam_role.requests.arn
   timeout = 30
   memory_size = 320
-  //  layers = [
-  //    var.python_requests_layer_arn]
+    layers = [
+      var.python_requests_layer_arn]
   environment {
     variables = {
       API = var.API
