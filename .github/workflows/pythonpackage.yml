@@ -14,11 +14,23 @@ jobs:
       matrix:
         python-version: [3.7]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+
+      - uses: technote-space/get-diff-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PREFIX_FILTER: |
+            python-requests
+            .github/workflows
+          SUFFIX_FILTER: .yml
+
+      - name: print diff
+        if: env.GIT_DIFF
+        run: echo ${{ env.GIT_DIFF }}
 
       - uses: chrislennon/action-aws-cli@v1.1
       - name: Configure AWS credentials
