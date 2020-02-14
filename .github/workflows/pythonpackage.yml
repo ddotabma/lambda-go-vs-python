@@ -27,11 +27,6 @@ jobs:
             python-requests
           SUFFIX_FILTER: .txt
 
-
-      - name: print diff
-        if: env.GIT_DIFF
-        run: echo ${{ env.GIT_DIFF }}
-
       - uses: chrislennon/action-aws-cli@v1.1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -48,11 +43,13 @@ jobs:
           zip -rq9 python-requests-layer.zip python
 
       - name: Upload layer zip to S3
+        if: env.GIT_DIFF
         working-directory: python-requests
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
       - name: Update lambda layer using S3
+        if: env.GIT_DIFF
         working-directory: python-requests
         run: |
           LAYER_VERSION_ARN=$(aws lambda publish-layer-version \
@@ -78,6 +75,7 @@ jobs:
           python-requests.zip
 
       - name: Update lambda function configuration
+        if: env.GIT_DIFF
         working-directory: python-requests
         run: |
           echo ${LAYER_VERSION_ARN}
