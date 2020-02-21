@@ -1,5 +1,3 @@
-export AWS_DEFAULT_REGION=eu-west-1
-export AWS_PROFILE=github
 rm -r python
 rm -r lambda-packaged/
 

@@ -1,0 +1,7 @@
+{
+  "dev": {
+    "s3_bucket":  YOUR_BUCKET ,
+    "app_function": "api.app"
+  }
+}
+
