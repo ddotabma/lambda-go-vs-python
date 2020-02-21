@@ -17,6 +17,9 @@ jobs:
         go-version: 1.13
       id: go
 
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
     - uses: chrislennon/action-aws-cli@v1.1
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -24,9 +27,6 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
 
     - name: Build exectuable
       working-directory: go-requests
