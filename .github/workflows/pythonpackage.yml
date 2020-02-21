@@ -35,20 +35,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      - name: Build new lambda layer
+      - name: Create zip file for lambda layer
         if: env.GIT_DIFF
         working-directory: python-requests
         run: |
           pip install -r requirements.txt -t python/lib/python3.7/site-packages/
           zip -rq9 python-requests-layer.zip python
 
-      - name: Upload layer zip to S3
+      - name: Upload lambda layer zip to S3
         if: env.GIT_DIFF
         working-directory: python-requests
         run: |
           aws s3 cp python-requests-layer.zip s3://bdr-go-blog/python-requests-layer.zip
 
-      - name: Update lambda layer using S3
+      - name: Update lambda layer using zip from S3
         if: env.GIT_DIFF
         working-directory: python-requests
         run: |
@@ -58,7 +58,7 @@ jobs:
           --compatible-runtimes python3.7 | jq -r ".LayerVersionArn")
           echo "::set-env name=LAYER_VERSION_ARN::${LAYER_VERSION_ARN}"
 
-      - name: Upload lambda zip to S3
+      - name: Create & upload lambda function zip to S3
         working-directory: python-requests
         run: |
           mkdir lambda-packaged
@@ -67,14 +67,14 @@ jobs:
           cd lambda-packaged && zip -rq python-requests.zip *
           aws s3 cp python-requests.zip s3://bdr-go-blog
 
-      - name: Update lambda function
+      - name: Update lambda function with zip from S3
         working-directory: python-requests
         run: |
           aws lambda update-function-code --function-name \
           api-calls-python --s3-bucket bdr-go-blog --s3-key \
           python-requests.zip
 
-      - name: Update lambda function configuration
+      - name: Update lambda function configuration to use new lambda layer
         if: env.GIT_DIFF
         working-directory: python-requests
         run: |
